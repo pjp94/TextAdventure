@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TextAdventure2</string>
+
+    <!-- Buttons -->
+    <string name="begin">Begin</string>
+    <string name="submit">Submit</string>
+
+    <!-- Constant responses -->
+    <string name="invalid_action">Invalid action. Please enter a valid command.</string>
+    <string name="invalid_first_word">Invalid action. Please ensure the first word of your command is a verb.</string>
+    <string name="invalid_move">You can\'t go any further in that direction.</string>
+</resources>
