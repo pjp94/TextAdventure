@@ -1,12 +1,10 @@
 package com.example.pramath.textadventure2;
 
 import android.content.Context;
-import android.content.res.Resources;
 
+import com.example.pramath.textadventure2.Enums.Direction;
+import com.example.pramath.textadventure2.Enums.Verb;
 import com.example.pramath.textadventure2.MapData.Map;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 class InputHandler {
 
@@ -17,20 +15,21 @@ class InputHandler {
   // final Story story;
   // Scene scene
 
-  private final HashSet<String> VERB_SET_GO;
-  private final HashSet<String> VERB_SET_TAKE;
-  private final HashSet<String> VERB_SET_DROP;
-
+  private Thesaurus thesaurus;
 
   InputHandler(DataTransfer dataTransfer, Context context) {
 //   this.story = story;
 //   scene = Scene.INTRO;
     this.dataTransfer = dataTransfer;
     this.context = context;
+    thesaurus = new Thesaurus(context);
+  }
 
-    VERB_SET_GO = new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.verb_go)));
-    VERB_SET_TAKE = new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.verb_take)));
-    VERB_SET_DROP = new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.verb_drop)));
+  InputHandler(DataTransfer dataTransfer, Thesaurus thesaurus, Context context) {
+
+    this.dataTransfer = dataTransfer;
+    this.thesaurus = thesaurus;
+    this.context = context;
   }
 
   private boolean includesWord(String input) {
@@ -38,102 +37,34 @@ class InputHandler {
   }
 
   String parseInput(String input) {
+    Player player = dataTransfer.getPlayer();
+    Map map = dataTransfer.getMap();
+
     String[] words = input.toLowerCase().split("\\s+");
-    String response;
+    String response = "";
 
-    if (words.length > 0) {
-      String verb = words[0];
-      Verb verbType = getVerbType(verb);
-
-      switch (verbType) {
-        case GO:
-
-          break;
-      }
+    if (words.length == 0) {
+      return response;
     }
 
-    return "";
-  }
+    String verb = words[0];
+    Verb verbType = thesaurus.getVerb(verb);
 
-//  public String handleInput(String input) {
-//    String[] words = input.split("\\s+");
-//    String response;
-//
-//    if (words.length > 1) {
-//      String verb = words[0].toLowerCase();
-//      Player player = dataTransfer.getPlayer();
-//      Map map = dataTransfer.getMap();
-//
-//      switch (verb) {
-//        case "go":
-//          String direction = words[1].toLowerCase();
-//
-//          switch (direction) {
-//            case "north":
-//            case "forward":
-//            case "up":
-//              if (map.isValidSpotToMoveTo(player.positionIfMoves(Direction.NORTH))) {
-//                player.move(Direction.NORTH);
-//                response = "You go " + direction + ".";
-//              } else {
-//                response = context.getString(R.string.invalid_move);
-//              }
-//              break;
-//            case "south":
-//            case "backwards":
-//            case "down":
-//              if (map.isValidSpotToMoveTo(player.positionIfMoves(Direction.SOUTH))) {
-//                player.move(Direction.SOUTH);
-//                response = "You go " + direction + ".";
-//              } else {
-//                response = context.getString(R.string.invalid_move);
-//              }
-//              break;
-//            case "east":
-//            case "right":
-//              if (map.isValidSpotToMoveTo(player.positionIfMoves(Direction.EAST))) {
-//                player.move(Direction.EAST);
-//                response = "You go " + direction + ".";
-//              } else {
-//                response = context.getString(R.string.invalid_move);
-//              }
-//              break;
-//            case "west":
-//            case "left":
-//              if (map.isValidSpotToMoveTo(player.positionIfMoves(Direction.WEST))) {
-//                player.move(Direction.WEST);
-//                response = "You go " + direction + ".";
-//              } else {
-//                response = context.getString(R.string.invalid_move);
-//              }
-//              break;
-//            default:
-//              response = context.getString(R.string.invalid_action);
-//          }
-//          break;
-//        default:
-//          response = context.getString(R.string.invalid_action);
-//      }
-//    } else {
-//      response = context.getString(R.string.invalid_action);
-//    }
-//
-//    return response;
-//  }
+    switch (verbType) {
+      case GO:
+        String directionWord = words[1];
+        Direction direction = thesaurus.getDirection(directionWord, player.getHeading());
 
-  Verb getVerbType(String word) {
-    Verb verbType;
-
-    if (VERB_SET_GO.contains(word)) {
-      verbType = Verb.GO;
-    } else if (VERB_SET_TAKE.contains(word)) {
-      verbType = Verb.TAKE;
-    } else if (VERB_SET_DROP.contains(word)) {
-      verbType = Verb.DROP;
-    } else {
-      verbType = Verb.INVALID;
+        if (map.isValidSpotToMoveTo(player.positionIfMoves(direction))) {
+          player.move(direction);
+          response = String.format(context.getString(R.string.move_success), verb, direction.getName());
+        } else {
+          response = context.getString(R.string.invalid_move);
+        }
+        break;
+      default:
     }
 
-    return verbType;
+    return response;
   }
 }

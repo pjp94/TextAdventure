@@ -1,12 +1,17 @@
 package com.example.pramath.textadventure2;
 
+import com.example.pramath.textadventure2.Enums.Direction;
+
 class Player {
 
   private final String name;
   private Coordinate position;
+  private Direction heading;
 
   Player(String name) {
     this.name = name;
+    position = new Coordinate();
+    heading = Direction.NORTH;
   }
 
   public String getName() {
@@ -17,12 +22,18 @@ class Player {
     return position;
   }
 
-  private void setPosition(Coordinate coordinate) {
+  void setPosition(Coordinate coordinate) {
     int x = coordinate.getX();
     int y = coordinate.getY();
 
     this.position.setX(x);
     this.position.setY(y);
+  }
+
+  Direction getHeading() { return heading; }
+
+  void setHeading(Direction heading) {
+    this.heading = heading;
   }
 
   private Coordinate updatedPosition(Direction direction) {
@@ -47,11 +58,12 @@ class Player {
     return new Coordinate(x, y);
   }
 
-  public void move(Direction direction) {
+  void move(Direction direction) {
     setPosition(updatedPosition(direction));
+    setHeading(direction);
   }
 
-  public Coordinate positionIfMoves(Direction direction) {
+  Coordinate positionIfMoves(Direction direction) {
     return updatedPosition(direction);
   }
 

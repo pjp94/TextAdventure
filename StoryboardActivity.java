@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.pramath.textadventure2.Enums.Direction;
 import com.example.pramath.textadventure2.MapData.Map;
+import com.example.pramath.textadventure2.MapData.MapGenerator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,12 +32,15 @@ public class StoryboardActivity extends AppCompatActivity {
     setContentView(R.layout.activity_storyboard);
     ButterKnife.bind(this);
 
-//    map = new Map(new Coordinate(5, 7));
-//    player = new Player("poop", new Coordinate(3, 3));
-//    dataTransfer = new DataTransfer(player, map);
+    map = MapGenerator.generateMap(
+            "\\app\\src\\main\\java\\com\\example\\pramath\\textadventure2\\MapData\\MapTextFiles\\Map1.txt");
+    player = new Player("poop");
+    player.setPosition(new Coordinate(4, 1));
+    player.setHeading(Direction.SOUTH);
+    dataTransfer = new DataTransfer(player, map);
 //    storyboard = new Storyboard();
-//    inputHandler = new InputHandler(dataTransfer); // TODO: Pass in Story class so it knows which story to handle
-//    responseBuilder = new ResponseBuilder();
+    inputHandler = new InputHandler(dataTransfer, getApplicationContext()); // TODO: Pass in Story class so it knows which story to handle
+    responseBuilder = new ResponseBuilder();
   }
 
   @OnClick(R.id.button_submit)

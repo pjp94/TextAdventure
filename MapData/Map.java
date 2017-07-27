@@ -21,8 +21,9 @@ public class Map {
   public boolean isValidSpotToMoveTo(Coordinate position) {
     int x = position.getX();
     int y = position.getY();
+    MapElement cell = map[x][y];
 
-    return map[x][y] instanceof Floor;
+    return cell instanceof Floor || (cell instanceof Door && !((Door) cell).isLocked());
   }
 
   public String toPlainText() {
